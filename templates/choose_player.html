@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Player</title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        label {
+            position: relative;
+            padding-left: 2.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        label:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background-color: #333;
+            border: 2px solid #f0f0f0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        input[type="radio"]:checked + label:before {
+            background-color: #e6b800;
+            border-color: #f0f0f0;
+        }
+
+        input[type="submit"] {
+			margin-top: 1rem;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e6b800;
+            color: #f0f0f0;
+        }
+
+		.player-image {
+			width: 2.5rem;
+			height: 2.5rem;
+			border-radius: 50%;
+			object-fit: cover;
+			margin-right: 0.5rem;
+			transform: translateY(1rem);
+		}
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Choose a Player</h1>
+        <form method="post" action="{{ url_for('loading') }}">
+            {% for player_name, player_id in players.items() %}
+                <div class="player-container">
+                    <img src="https://crafatar.com/renders/head/{{ player_id.replace('.json', '') }}" class="player-image">
+                    <input type="radio" id="{{ player_id }}" name="player" value="{{ player_id }}">
+                    <label for="{{ player_id }}">{{ player_name }}</label>
+                </div>
+            {% endfor %}
+            <input type="hidden" name="nb_files" value="{{ nb_files }}">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
