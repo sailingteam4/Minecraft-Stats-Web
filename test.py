@@ -12,6 +12,12 @@ app.secret_key = 'caca'
 app.config['UPLOAD_FOLDER'] = './uploads'
 nb_files = 0
 
+for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER'], topdown=False):
+    for name in files:
+        os.remove(os.path.join(root, name))
+    for name in dirs:
+        os.rmdir(os.path.join(root, name))
+
 def allowed_file(filename):
 	return '.' in filename and \
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -60,4 +66,4 @@ def loading():
 	stats = getstats(datas)
 	stats['pseudo'] = uuid_pseudo(player_id.replace('.json', '').replace('-', ''))
 	stats['player_id'] = player_id.replace('.json', '').replace('-', '')
-	return render_template('show.html', stats=stats)
+	return render_template('show2.html', stats=stats)
