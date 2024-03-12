@@ -10,13 +10,14 @@ app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'zip'}
 app.secret_key = 'caca'
 app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024
 nb_files = 0
 
 for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER'], topdown=False):
-    for name in files:
-        os.remove(os.path.join(root, name))
-    for name in dirs:
-        os.rmdir(os.path.join(root, name))
+	for name in files:
+		os.remove(os.path.join(root, name))
+	for name in dirs:
+		os.rmdir(os.path.join(root, name))
 
 def allowed_file(filename):
 	return '.' in filename and \
@@ -43,6 +44,15 @@ def test():
 				zip_ref.extractall(app.config['UPLOAD_FOLDER']+ '/up_' + str(nb_files))
 			nb_files += 1
 			os.remove(file_path)
+			if not os.path.exists(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/'):
+				for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1), topdown=False):
+					for file in files:
+						os.remove(os.path.join(root, file))
+					for dir in dirs:
+						os.rmdir(os.path.join(root, dir))
+				os.rmdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1))
+				flash('Invalid file. No stats/ folder found')
+				return redirect(request.url)
 			files = os.listdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/')
 			players = {}
 			for f in files:
