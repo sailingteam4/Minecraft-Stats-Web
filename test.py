@@ -82,7 +82,11 @@ def loading():
 	player_id = request.form.get('player')
 	nb_files = request.form.get('nb_files')
 	with open(app.config['UPLOAD_FOLDER'] + '/up_' + nb_files + '/stats/' + player_id, 'r') as file:
-		datas = json.load(file)
+		try:
+			datas = json.load(file)
+		except:
+			flash('Invalid file. The .json file is not valid.')
+			return render_template('hello.html', notif='Invalid file. The .json file is not valid.')
 	stats = getstats(datas)
 	stats['pseudo'] = uuid_pseudo(player_id.replace('.json', '').replace('-', ''))
 	stats['player_id'] = player_id.replace('.json', '').replace('-', '')
