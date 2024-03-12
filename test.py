@@ -58,9 +58,16 @@ def test():
 				return render_template('hello.html', notif='Invalid file. No stats/ folder found')
 			files = os.listdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/')
 			players = {}
+			count = 0
 			for f in files:
 				if f.endswith('.json'):
-					players[uuid_pseudo(f.replace('.json', '').replace('-', ''))] = f
+					pseudo = uuid_pseudo(f.replace('.json', '').replace('-', ''))
+					if pseudo:
+						players[pseudo] = f
+						count += 1
+			if count == 0:
+				flash('Invalid file. No .json files found in stats/ folder')
+				return render_template('hello.html', notif='Invalid file. No .json files found in stats/ folder')
 			return render_template('choose_player.html', players=players, nb_files=nb_files-1)
 		
 		else:
