@@ -30,7 +30,7 @@ def test():
 		# Check if the file is present in the request
 		if 'file' not in request.files:
 			flash('No file part')
-			return redirect(request.url)
+			return redirect(request.url, notif='No file part')
 		
 		file = request.files['file']
 		
@@ -40,6 +40,9 @@ def test():
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 			file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+			if not zipfile.is_zipfile(file_path):
+				flash('Invalid file type. Only .zip files are allowed.')
+				return redirect(request.url, notif='Invalid file type. Only .zip files are allowed.')
 			with zipfile.ZipFile(file_path, 'r') as zip_ref:
 				zip_ref.extractall(app.config['UPLOAD_FOLDER']+ '/up_' + str(nb_files))
 			nb_files += 1
@@ -52,7 +55,7 @@ def test():
 						os.rmdir(os.path.join(root, dir))
 				os.rmdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1))
 				flash('Invalid file. No stats/ folder found')
-				return redirect(request.url)
+				return redirect(request.url, notif='Invalid file. No stats/ folder found')
 			files = os.listdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/')
 			players = {}
 			for f in files:
@@ -62,10 +65,10 @@ def test():
 		
 		else:
 			flash('Invalid file type. Only .zip files are allowed.')
-			return redirect(request.url)
+			return redirect(request.url, notif='Invalid file type. Only .zip files are allowed.')
 	
 	# If the request method is GET, render the hello.html template
-	return render_template('hello.html')
+	return render_template('hello.html', notif='')
 
 @app.route('/show', methods=['POST'])
 def loading():
@@ -76,4 +79,4 @@ def loading():
 	stats = getstats(datas)
 	stats['pseudo'] = uuid_pseudo(player_id.replace('.json', '').replace('-', ''))
 	stats['player_id'] = player_id.replace('.json', '').replace('-', '')
-	return render_template('show2.html', stats=stats)
+	return render_template('show.html', stats=stats)
