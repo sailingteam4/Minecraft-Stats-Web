@@ -42,7 +42,7 @@ def test():
 			file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 			if not zipfile.is_zipfile(file_path):
 				flash('Invalid file type. Only .zip files are allowed.')
-				return redirect(request.url, notif='Invalid file type. Only .zip files are allowed.')
+				return render_template(request.url, notif='Invalid file type. Only .zip files are allowed.')
 			with zipfile.ZipFile(file_path, 'r') as zip_ref:
 				zip_ref.extractall(app.config['UPLOAD_FOLDER']+ '/up_' + str(nb_files))
 			nb_files += 1
@@ -55,7 +55,7 @@ def test():
 						os.rmdir(os.path.join(root, dir))
 				os.rmdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1))
 				flash('Invalid file. No stats/ folder found')
-				return redirect(request.url, notif='Invalid file. No stats/ folder found')
+				return render_template(request.url, notif='Invalid file. No stats/ folder found')
 			files = os.listdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/')
 			players = {}
 			for f in files:
@@ -65,7 +65,7 @@ def test():
 		
 		else:
 			flash('Invalid file type. Only .zip files are allowed.')
-			return redirect(request.url, notif='Invalid file type. Only .zip files are allowed.')
+			return render_template(request.url, notif='Invalid file type. Only .zip files are allowed.')
 	
 	# If the request method is GET, render the hello.html template
 	return render_template('hello.html', notif='')
