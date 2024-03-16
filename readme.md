@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 3. Run the application
 ```bash
-flask --app test run
+flask --app main run
 ```
 
 ## Usage
