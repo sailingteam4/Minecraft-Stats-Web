@@ -13,11 +13,14 @@ app.config['UPLOAD_FOLDER'] = './uploads'
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024
 nb_files = 0
 
-for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER'], topdown=False):
-	for name in files:
-		os.remove(os.path.join(root, name))
-	for name in dirs:
-		os.rmdir(os.path.join(root, name))
+def delete_folder(folder_name):
+	for root, dirs, files in os.walk(folder_name, topdown=False):
+		for name in files:
+			os.remove(os.path.join(root, name))
+		for name in dirs:
+			os.rmdir(os.path.join(root, name))
+
+delete_folder(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
 	return '.' in filename and \
@@ -48,11 +51,7 @@ def test():
 			nb_files += 1
 			os.remove(file_path)
 			if not os.path.exists(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1) + '/stats/'):
-				for root, dirs, files in os.walk(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1), topdown=False):
-					for file in files:
-						os.remove(os.path.join(root, file))
-					for dir in dirs:
-						os.rmdir(os.path.join(root, dir))
+				delete_folder(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1))
 				os.rmdir(app.config['UPLOAD_FOLDER'] + '/up_' + str(nb_files-1))
 				flash('Invalid file. No stats/ folder found')
 				return render_template('hello.html', notif='Invalid file. No stats/ folder found')
@@ -85,6 +84,7 @@ def loading():
 		try:
 			datas = json.load(file)
 		except:
+			delete_folder(app.config['UPLOAD_FOLDER'] + '/up_' + nb_files)
 			flash('Invalid file. The .json file is not valid.')
 			return render_template('hello.html', notif='Invalid file. The .json file is not valid.')
 	stats = getstats(datas)
