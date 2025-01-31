@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>Statistiques Minecraft</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Statistiques Minecraft</h1>
+        <div class="player-select">
+            <h2>Sélectionne un Joueur</h2>
+            {% if players %}
+                <div class="player-grid">
+                    {% for player in players %}
+                        <a href="/stats/{{ player }}" class="player-card">
+                            <img src="{{ url_for('player_head', username=player) }}" alt="{{ player }}" class="player-head">
+                            <span class="player-name">{{ player }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Aucun joueur trouvé</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

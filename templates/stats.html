@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Statistiques Minecraft de {{ player }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="stats-container">
+        <div class="slides">
+            <div class="slide" id="slide1">
+                <div class="minecraft-panorama"></div>
+                <img src="{{ url_for('player_head', username=player) }}" alt="{{ player }}" class="player-head animated">
+                <h1>Bienvenue dans ton Aventure Minecraft</h1>
+                <h2>{{ player }}</h2>
+            </div>
+            
+            <div class="slide" id="slide2">
+                <div class="day-night-cycle"></div>
+                <h2>Temps de Jeu</h2>
+                <div class="stat-value">{{ stats.time_played }}h</div>
+                <div class="stat-detail">Soit {{ (stats.time_played/24)|round(1) }} jours d'aventure !</div>
+                <img src="{{ url_for('static', filename='images/clock.gif') }}" class="slide-illustration clock">
+            </div>
+
+            <div class="slide" id="slide3">
+                <div class="parallax-background"></div>
+                <h2>Distance Parcourue</h2>
+                <div class="stat-value">{{ stats.distance_travelled }}km</div>
+                <div class="stat-detail">Un véritable explorateur !</div>
+                <img src="{{ url_for('static', filename='images/boots.png') }}" class="slide-illustration walking">
+            </div>
+
+            <div class="slide" id="slide4">
+                <div class="mining-animation"></div>
+                <h2>Maître Mineur</h2>
+                <div class="stat-value">{{ stats.total_mined }}</div>
+                <div class="stat-detail">Blocs minés</div>
+                <div class="stat-detail">Block favori : {{ stats.most_mined.replace('minecraft:', '')|replace('_', ' ') }}</div>
+                <img src="{{ url_for('static', filename='images/pickaxe.png') }}" class="slide-illustration swinging">
+            </div>
+
+            <div class="slide" id="slide5">
+                <div class="combat-particles"></div>
+                <h2>Statistiques de Combat</h2>
+                <div class="stat-value">{{ stats.total_killed }}</div>
+                <div class="stat-detail">Créatures vaincues</div>
+                <div class="stat-detail">Ennemi principal : {{ stats.most_killed.replace('minecraft:', '')|replace('_', ' ') }}</div>
+                <img src="{{ url_for('static', filename='images/sword.png') }}" class="slide-illustration floating">
+            </div>
+        </div>
+        <div class="controls">
+            <button onclick="prevSlide()">←</button>
+            <button onclick="nextSlide()">→</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='slideshow.js') }}"></script>
+</body>
+</html>
